@@ -82,6 +82,32 @@ function validateForm (){
     return control;
 }
 
+	function showMenuChange(){
+		let menuStatus = $("#showAllMenu").is(":checked");
+		$.ajax({
+			type:       "GET",
+			url:        "ajax_processing.php",
+			cache:      false,
+			data:       "action=updateMenu&menuStatus=" + menuStatus,
+			success:    function(html) {
+				console.log(html);
+			}
+		});
+	} 
+
+	function updateMenuSettings(){
+		$.ajax({
+			type:       "GET",
+			url:        "ajax_processing.php",
+			cache:      false,
+			data:       "action=updateSettings",
+			success:    function() {
+				location.reload();
+			}
+		});
+	}
+		
+
   function bind_removes(){
 
 
