@@ -34,14 +34,13 @@
 
 		//get organizations (already returned in an array)
 		$orgArray = $resource->getDistinctOrganizationArray();
-
+		
 		//get licenses (already returned in array)
 		$licenseArray = $resourceAcquisition->getLicenseArray();
-
 		echo "<div style='background-color:white; width:219px; padding:7px;'>";
 		echo "<div class='rightPanelLink'><a href='summary.php?resourceID=" . $resource->resourceID . "&resourceAcquisitionID=" . $resourceAcquisitionID . "' target='_blank' class='helpfulLink'>"._("Print View")."</a></div>";
-		if (($resource->systemNumber) && ($config->settings->catalogURL != '')) {
-			echo "<div class='rightPanelLink'><a href='" . $config->settings->catalogURL . $resource->systemNumber . "' target='_blank'>"._("Catalog View")."</a></div>";
+		if (($resourceAcquisition->recordSetIdentifier) && ($config->settings->catalogURL != '')) {
+			echo "<div class='rightPanelLink'><a href='" . $config->settings->catalogURL . '/record=' . substr($resourceAcquisition->recordSetIdentifier, 0, -1) . "' target='_blank' class='helpfulLink'>"._("Catalog View")."</a></div>";
 		}
 		echo "</div>";
 
