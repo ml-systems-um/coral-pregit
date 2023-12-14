@@ -16,3 +16,6 @@ tests/_support/_generated/
 
 # Custom terms tool branding
 licensing/css/custom.css
+
+#Dearborn's custom testing environment.
+dearborn_coral_development/
