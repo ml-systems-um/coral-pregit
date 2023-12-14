@@ -270,9 +270,8 @@ $(function(){
 });
 
 $(".addParent").live('click', function() {
-
-    var parentID = $("#newParent .oneParent input[name='parentResourceNewID']'").val();
-    var parentName = $("#newParent .oneParent input[name='parentResourceName']'").val();
+    let parentID = $(".oneParent input[name='parentResourceNewID']").val();
+    let parentName = $(".oneParent input[name='parentResourceName']").val();
 
     if (parentName == '') {
         return false;
