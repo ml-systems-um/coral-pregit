@@ -22,6 +22,21 @@
 	bindtextdomain("messages", dirname(__FILE__) . "/locale");
 	textdomain("messages");
 ?>
+<?php include_once('dearborn_coral_development/rootAuth/getAuths.php'); ?>
+<?php 
+	//Get Uniqname from Weblogin
+	$uniqname = (isset($_GET['test'])) ? $_GET['test'] : getenv('REMOTE_USER');
+	$uniqname = (!$uniqname) ? 'testUser' : $uniqname;
+	$_SESSION['loginID'] = $uniqname;
+
+	$modules = [
+		"resources" => _("Resources"), 
+		"licensing" => _("Licensing"), 
+		"organizations" => _("Organizations"), 
+		"usage" => _("Usage Statistics"), 
+		"management" => _("Management") 
+	];
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -58,28 +73,28 @@
 
 	<section class="icons">
 		<?php 
-			$modules = [
-				"resources" => _("Resources"), 
-				"licensing" => _("Licensing"), 
-				"organizations" => _("Organizations"), 
-				"usage" => _("Usage Statistics"), 
-				"management" => _("Management") 
-			];
-
 			$menuSettings = Config::getSettingsFor('settings');
 			$displayFullMenu = ($menuSettings['displayFullMenu'] == "Y");
 			foreach ($modules as $key => $value) {
+				$linkedIcon = [
+					"<div class='main-page-icons'>",
+						"<a href='{$key}/'><img src='images/icon-{$key}.png' class='rollover' /><span>{$value}</span></a>",
+					"</div>",
+				];
+				$unlinkedIcon = [
+					"<div class='main-page-icons main-page-icons-off'>",
+							"<img src='images/icon-{$key}-off.png'><span>{$value}</span>",
+					"</div>",
+				];
 				$skippedMenu = true;
 				try {
 					$mod_conf = Config::getSettingsFor($key);
 					if (isset($mod_conf["enabled"]) && $mod_conf["enabled"] == "Y")
-					{
+					{	
+						$auths = getAuths($uniqname, $key);
+						$output = ($auths) ? $linkedIcon : $unlinkedIcon;
 						$skippedMenu = false;
-						$output = [
-							"<div class='main-page-icons'>",
-								"<a href='{$key}/'><img src='images/icon-{$key}.png' class='rollover' /><span>{$value}</span></a>",
-							"</div>",
-						];
+						
 						echo implode("", $output);
 					}
 				}
@@ -91,13 +106,19 @@
 					}
 				}
 				if($displayFullMenu && $skippedMenu){
-					$output = [
-						"<div class='main-page-icons main-page-icons-off'>",
-								"<img src='images/icon-{$key}-off.png'><span>{$value}</span>",
-						"</div>",
-					];
-					echo implode("", $output);
+
+					echo implode("", $unlinkedIcon);
 				}
+			}
+			//Are they an admin?
+			$adminAuth = getAuths($uniqname, 'auth');
+			if($adminAuth){
+				$linkedIcon = [
+					"<div class='main-page-icons'>",
+						"<a href='/auth/admin.php'><img src='images/icon-admin.png' class='rollover' /><span>Admin</span></a>",
+					"</div>",
+				];
+				echo implode("", $linkedIcon);
 			}
 		?>
 	</section>

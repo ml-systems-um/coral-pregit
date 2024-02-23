@@ -22,30 +22,36 @@
 $user = new User(new NamedArguments(array('primaryKey' => $loginID)));
 $testUser = $user->privilegeID;
 
-//if the user doesn't exist in database set them up with shell user account (we assume that since they were authorized to come in they can create new requests and view existing)
-if (!($testUser)){
-	$user = new User();
-	$user->loginID = $loginID;
+if(!($testUser)){
+	$config = new Configuration();
+	if ($config->settings->createNewUserAutomatically == 'Y'){
+		//if the user doesn't exist in database set them up with shell user account (we assume that since they were authorized to come in they can create new requests and view existing)
+		$user = new User();
+		$user->loginID = $loginID;
 
-	//default user to read only privilege
-	$user->privilegeID='3';
+		//default user to read only privilege
+		$user->privilegeID='3';
 
-	//default to no account tab privilege
-	$user->accountTabIndicator='0';
+		//default to no account tab privilege
+		$user->accountTabIndicator='0';
 
-	try{
-		$ldap = new LdapPerson($loginID);
+		try{
+			$ldap = new LdapPerson($loginID);
 
-		if ($ldap->lname){
-			$user->lastName = $ldap->lname;
-			$user->firstName = $ldap->fname;
+			if ($ldap->lname){
+				$user->lastName = $ldap->lname;
+				$user->firstName = $ldap->fname;
+			}
+		}catch(Exception $e) {
+			$errorMessage = _("LDAP Connection is not working or has timed out.  Please check configuration.ini to verify settings.");
 		}
-	}catch(Exception $e) {
-		$errorMessage = _("LDAP Connection is not working or has timed out.  Please check configuration.ini to verify settings.");
+		$user->save();
+	} else {
+		//If they don't have access, redirect them to the home page.
+		header("Location: https://".$_SERVER['HTTP_HOST']); 
+		exit;
 	}
-	$user->save();
 }
-
 
 $privilege = new Privilege(new NamedArguments(array('primaryKey' => $user->privilegeID)));
 

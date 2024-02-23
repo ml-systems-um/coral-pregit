@@ -80,19 +80,19 @@ function validateForm (){
     }
     return control;
 }
-
-	function showMenuChange(){
-		let menuStatus = $("#showAllMenu").is(":checked");
+	function settingChange(e){
+		let elementID = e.id;
+		let status = $("#"+elementID).is(":checked");
 		$.ajax({
 			type:       "GET",
 			url:        "ajax_processing.php",
 			cache:      false,
-			data:       "action=updateMenu&menuStatus=" + menuStatus,
+			data:       "action=updateSetting&setting=" + elementID + "&status=" + status,
 			success:    function(html) {
 				console.log(html);
 			}
 		});
-	} 
+	}
 
 	function updateMenuSettings(){
 		$.ajax({

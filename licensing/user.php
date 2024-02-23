@@ -105,7 +105,8 @@ if ($loginID){
 
 	//if the user doesn't exist in database we need to redirect them to a page to give instructions on how to be added
 	if ($user->privilegeID == ""){
-		header('Location: not_available.php');
+		//If they don't have access, redirect them to the home page.
+		header("Location: https://".$_SERVER['HTTP_HOST']); 
 		exit; //PREVENT SECURITY HOLE
 	}
 }

@@ -95,14 +95,32 @@ if (isset($user) && ($user->isAdmin) && ($user->getOpenSession())){
         <?php 
             $fileName = "../common/configuration.ini";
 			$configFile = parse_ini_file($fileName, true);
-            $menuSettingExists = (isset($configFile['settings']['displayFullMenu']));
-            if($menuSettingExists){ 
-                $menuSetting = ($configFile['settings']['displayFullMenu'] == 'Y') ? 'checked' : '';
+            $dearbornConfigAdditions = [
+                'displayFullMenu', //Setting to display the full menu if modules aren't enabled or installed.
+                'createNewUserAutomatically', //Setting to create new users if they don't exist when not using the authorization module. Only set in Resources and Organizations.
+            ];
+            $dearbornConfigMenu = [
+                'displayFullMenu' => 'Show uninstalled menu options',
+                'createNewUserAutomatically' => 'Create a new user automatically if they link to the resource. Only for Resources and Organizations.',
+            ];
+            $missingSettings = [];
+            foreach($dearbornConfigAdditions as $config){
+                $configNotSet = !(isset($configFile['settings'][$config]));
+                if($configNotSet){
+                    $missingSettings[] = $config;
+                }
+            }
+            $configSettings = array_diff($dearbornConfigAdditions, $missingSettings);
+            foreach($configSettings as $setting){
+                $menuSetting = ($configFile['settings'][$setting] == 'Y') ? 'checked' : '';
+                $text = _($dearbornConfigMenu[$setting]);
+                echo "<label for='{$setting}' style='width:75%;margin-left:0px;'>{$text}</label>";
+                echo "<input style='margin-top:0px;margin-bottom:20px;' type='checkbox' onchange='settingChange(this)' id='{$setting}' {$menuSetting}/>";
+                echo '<br>';
+            }
         ?>
-            <label for="showAllMenu" style="width:75%;margin-left:0px;"><?php echo _("Show uninstalled menu options")?></label>
-            <input style="margin-top:0px;" type="checkbox" onchange="showMenuChange()" id="showAllMenu" <?php echo $menuSetting?>/>
-        <?php } else { ?> 
-            <input style="width:100%;padding:1rem;" type="button" value="Add Menu Options Setting" onclick="updateMenuSettings()"/>
+        <?php if(count($missingSettings)>0){ ?>
+            <input style="width:100%;padding:1rem;" type="button" value="Add Missing Settings" onclick="updateMenuSettings()"/>
         <?php } ?>
     </div>
     <br>
@@ -112,7 +130,6 @@ if (isset($user) && ($user->isAdmin) && ($user->getOpenSession())){
 	</div>
 	<div class='smallerText' style='text-align:center; margin-top:13px;'><a href='index.php' id='login-link'><?php echo _("Login page")?></a></div>
     <?php include '../templates/footer.php'; ?>
-
 </form>
 
 
