@@ -44,6 +44,10 @@ function configSet($config_file, $section, $key, $value) {
 }
 
 if (($user->isAdmin) && ($user->getOpenSession())){
+	$validDearbornSettings = [
+		'displayFullMenu', //Setting to display the full menu if modules aren't enabled or installed.
+		'createNewUserAutomatically', //Setting to create new users if they don't exist when not using the authorization module. Only set in Resources and Organizations.
+	];
 
 	switch ($_GET['action']) {
 		case 'submitUser':
@@ -91,16 +95,26 @@ if (($user->isAdmin) && ($user->getOpenSession())){
 			}
 
 			break;
-		case 'updateMenu':
-			$updateStatus = $_GET['menuStatus'];
-			$fileName = "../common/configuration.ini";
-			$setting = ($updateStatus === "true") ? "Y" : "N";
-			$commonConfig = "../common/configuration.ini";
-			configSet($commonConfig, 'settings', 'displayFullMenu', $setting);
+		case 'updateSetting':
+			$updateStatus = $_GET['status'];
+			$settingName = $_GET['setting'];
+			if(!in_array($settingName, $validDearbornSettings)){
+				return false;
+			} else {
+				$setting = ($updateStatus === "true") ? "Y" : "N";
+				$commonConfig = "../common/configuration.ini";
+				configSet($commonConfig, 'settings', $settingName, $setting);
+			}
 			break;
 		case 'updateSettings':
 			$commonConfig = "../common/configuration.ini";
-			configSet($commonConfig, 'settings', 'displayFullMenu', 'Y');
+			$currentConfig = parse_ini_file($commonConfig, true);
+			foreach($validDearbornSettings as $setting){
+				$isNotSet = (!isset($currentConfig['settings'][$setting]));
+				if($isNotSet){
+					configSet($commonConfig, 'settings', $setting, 'Y');
+				}
+			}
 			break;
 		default:
 		   echo _("Action ") . $action . _(" not set up!");

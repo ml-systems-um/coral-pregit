@@ -34,6 +34,7 @@ function register_set_installed_variable_provider()
 						"settings" => [
 							"environment" => "prod",
 							"displayFullMenu" => "Y",
+							"createNewUserAutomatically" => "Y",
 						],
 						"database" => $db_details
 					];
