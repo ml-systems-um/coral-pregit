@@ -1354,6 +1354,7 @@ INSERT INTO OrganizationRole (shortName) values ("Vendor");
 INSERT INTO `Privilege` (shortName) values ('admin');
 INSERT INTO `Privilege` (shortName) values ('add/edit');
 INSERT INTO `Privilege` (shortName) values ('view only');
+INSERT INTO `Privilege` (shortName) values ('subject specialist');
 
 
 INSERT INTO `PurchaseSite` (shortName) values ('Main Library');
