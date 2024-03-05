@@ -582,6 +582,7 @@ DROP TABLE IF EXISTS `GeneralSubject`;
 CREATE TABLE `GeneralSubject` (
   `generalSubjectID` int(11) NOT NULL AUTO_INCREMENT,
   `shortName` varchar(200) DEFAULT NULL,
+  `subjectSpecialist` varchar(50) NOT NULL default '',
   PRIMARY KEY (`generalSubjectID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
