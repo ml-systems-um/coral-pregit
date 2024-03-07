@@ -48,7 +48,14 @@
 					echo "<td>" . $accountTab . "</td>";
 					echo "<td>" . $instance['emailAddress'] . "</td>";
 					echo "<td><a href='ajax_forms.php?action=getAdminUserUpdateForm&loginID=" . $instance['loginID'] . "&height=275&width=315&modal=true' class='thickbox'><img src='images/edit.gif' alt='"._("edit")."' title='"._("edit user")."'></a></td>";
-					echo "<td><a href='javascript:deleteUser(\"" . $instance['loginID'] . "\")'><img src='images/cross.gif' alt='"._("remove")."' title='"._("remove")."'></a></td>";
+					//Check to see if the user is attached to a subject area before letting people delete them.
+					$inUseSpecialist = $user->isSubjectSpecialist($instance['loginID']);
+					if ($inUseSpecialist) {
+						echo "<td><img src='images/do_not_enter.png' alt='"._("Specialist attached to subject")."' title='"._("Specialist attached to subject")."' /></td>";
+					} else {
+						echo "<td><a href='javascript:deleteUser(\"" . $instance['loginID'] . "\")'><img src='images/cross.gif' alt='"._("remove")."' title='"._("remove")."'></a></td>";
+					}
+
 					echo "</tr>";
 				}
 

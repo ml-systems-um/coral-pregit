@@ -16,64 +16,69 @@
 */
 
 
-   $('#updateVal').keyup(function(e) {
-		   if(e.keyCode == 13) {
-			   submitGeneralSubject();
-		   }
-	});
-
-	 $("#submitGeneralSubjectForm").click(function () {
+$('#updateVal').keyup(function(e) {
+	if(e.keyCode == 13) {
 		submitGeneralSubject();
-	 });
-
-	function submitGeneralSubject(){
-		if (validateGeneralSubject() === true) {
-			$('#submitGeneralSubjectForm').attr("disabled", "disabled");
-			  $.ajax({
-				 type:       "POST",
-				 url:        "ajax_processing.php?action=updateGeneralSubject",
-				 cache:      false,
-				 data:       { className: $("#editClassName").val(), shortName: $("#updateVal").val(), updateID: $("#editUpdateID").val()},
-				 success:    function(html) {
-					if (html){
-						$("#span_errors").html(html);
-						$("#submitGeneralSubjectForm").removeAttr("disabled");
-					}else{
-						kill();
-						window.parent.tb_remove();
-						window.parent.updateSubjectsTable();
-						return false;
-					}
-				 }
-
-
-			 });
-		}
-
-
-
 	}
+});
 
- function validateGeneralSubject(){
-	if ($("#updateVal").val() == ''){
-		$("#span_errors").html(_("Error - Please enter a value"));
-		return false;
-	}else{
-		return true;
-	}
+$("#submitGeneralSubjectForm").click(function () {
+ submitGeneralSubject();
+});
+
+function submitGeneralSubject(){
+ if (validateGeneralSubject() === true) {
+	 $('#submitGeneralSubjectForm').attr("disabled", "disabled");
+	   $.ajax({
+		  type:       "POST",
+		  url:        "ajax_processing.php?action=updateGeneralSubject",
+		  cache:      false,
+		  data:       { 
+						 className: $("#editClassName").val(), 
+						 shortName: $("#updateVal").val(), 
+						 updateID: $("#editUpdateID").val(),
+						 subjectSpecialist: $("#subjectSpecialist").val()
+					 },
+		  success:    function(html) {
+			 if (html){
+				 $("#span_errors").html(html);
+				 $("#submitGeneralSubjectForm").removeAttr("disabled");
+			 }else{
+				 kill();
+				 window.parent.tb_remove();
+				 window.parent.updateSubjectsTable();
+				 return false;
+			 }
+		  }
+
+
+	  });
+ }
+
+
+
+}
+
+function validateGeneralSubject(){
+if ($("#updateVal").val() == ''){
+ $("#span_errors").html(_("Error - Please enter a value"));
+ return false;
+}else{
+ return true;
+}
 
 }
 
 //kill all binds done by jquery live
 function kill(){
 
-	$('.submitGeneralSubject').die('click');
-	$('.changeDefault').die('blur');
-	$('.changeDefault').die('focus');
-	$('.changeInput').die('blur');
-	$('.changeInput').die('focus');
-	$('.select').die('blur');
-	$('.select').die('focus');
-	$('.remove').die('click');
+$('.submitGeneralSubject').die('click');
+$('.changeDefault').die('blur');
+$('.changeDefault').die('focus');
+$('.changeInput').die('blur');
+$('.changeInput').die('focus');
+$('.select').die('blur');
+$('.select').die('focus');
+$('.remove').die('click');
 
 }

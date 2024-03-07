@@ -582,6 +582,7 @@ DROP TABLE IF EXISTS `GeneralSubject`;
 CREATE TABLE `GeneralSubject` (
   `generalSubjectID` int(11) NOT NULL AUTO_INCREMENT,
   `shortName` varchar(200) DEFAULT NULL,
+  `subjectSpecialist` varchar(50) NOT NULL default '',
   PRIMARY KEY (`generalSubjectID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -1353,6 +1354,7 @@ INSERT INTO OrganizationRole (shortName) values ("Vendor");
 INSERT INTO `Privilege` (shortName) values ('admin');
 INSERT INTO `Privilege` (shortName) values ('add/edit');
 INSERT INTO `Privilege` (shortName) values ('view only');
+INSERT INTO `Privilege` (shortName) values ('subject specialist');
 
 
 INSERT INTO `PurchaseSite` (shortName) values ('Main Library');

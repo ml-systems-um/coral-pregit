@@ -18,22 +18,27 @@
 				<?php
 
 				foreach($generalSubjectArray as $ug) {
-					$generalSubject = new GeneralSubject(new NamedArguments(array('primaryKey' => $ug['generalSubjectID'])));
+					$userName = $user->attributes['loginID'];
+					$validUsers = [$userName, ""];
+					$isSpecialist = (in_array($ug['subjectSpecialist'], $validUsers));
+					if ($user->canEdit()||$isSpecialist){
+						$generalSubject = new GeneralSubject(new NamedArguments(array('primaryKey' => $ug['generalSubjectID'])));
 
-					echo "<tr>";
-					echo "<td>" . $generalSubject->shortName . "</td>";
-					echo "<td></td>";
-					echo "<td><a href='javascript:void(0);' class='resourcesSubjectLink' resourceID='" . $resourceID . " 'generalSubjectID='" . $ug['generalSubjectID'] . " 'detailSubjectID='" . -1 . "'><input class='add-button' type='button' title='"._("add")."' value='"._("Add")."'/></a></td>";
-
-					foreach ($generalSubject->getDetailedSubjects() as $detailedSubjects){
 						echo "<tr>";
+						echo "<td>" . $generalSubject->shortName . "</td>";
 						echo "<td></td>";
-						echo "<td>";
-						echo $detailedSubjects->shortName . "</td>";
-						echo "<td><a href='javascript:void(0);' class='resourcesSubjectLink' resourceID='" . $resourceID . " 'generalSubjectID='" . $ug['generalSubjectID'] . " 'detailSubjectID='" . $detailedSubjects->detailedSubjectID . "'><input class='add-button' type='button' title='"._("add")."' value='"._("Add")."'/></a></td>";
+						echo "<td><a href='javascript:void(0);' class='resourcesSubjectLink' resourceID='" . $resourceID . " 'generalSubjectID='" . $ug['generalSubjectID'] . " 'detailSubjectID='" . -1 . "'><input class='add-button' type='button' title='"._("add")."' value='"._("Add")."'/></a></td>";
+
+						foreach ($generalSubject->getDetailedSubjects() as $detailedSubjects){
+							echo "<tr>";
+							echo "<td></td>";
+							echo "<td>";
+							echo $detailedSubjects->shortName . "</td>";
+							echo "<td><a href='javascript:void(0);' class='resourcesSubjectLink' resourceID='" . $resourceID . " 'generalSubjectID='" . $ug['generalSubjectID'] . " 'detailSubjectID='" . $detailedSubjects->detailedSubjectID . "'><input class='add-button' type='button' title='"._("add")."' value='"._("Add")."'/></a></td>";
+							echo "</tr>";
+						}
 						echo "</tr>";
 					}
-					echo "</tr>";
 				}
 
 				?>

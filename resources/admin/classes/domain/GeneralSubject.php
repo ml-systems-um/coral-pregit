@@ -82,17 +82,25 @@ class GeneralSubject extends DatabaseObject {
 
 	// Save the General subject.  Use this function since a record needs to be added to the linking table also.
 	public function save($new = 0){
-
+		$cleanedShortName = str_replace("'", "''", $this->shortName);
+		$cleanedSelector = $this->subjectSpecialist;
 		if (isset($this->primaryKey)) {
 			// Update object
-			echo $query;
-			$query = "UPDATE GeneralSubject SET shortName='" . str_replace( "'", "''", $this->shortName ) . "' WHERE generalSubjectID=". $this->primaryKey;
-			$this->db->processQuery($query);
+			$primaryKey = $this->primaryKey;
+			$query = [
+				"UPDATE GeneralSubject",
+				"SET shortName = '{$cleanedShortName}',",
+				"subjectSpecialist = '{$cleanedSelector}'",
+				"WHERE generalSubjectID = {$primaryKey}"
+			];
+			$this->db->processQuery(implode(" ", $query));
 		} else {
 			// Insert object
-
-			$query = "INSERT INTO GeneralSubject (`shortName`) VALUES ('" . str_replace( "'", "''", $this->shortName ) . "')";
-			$this->primaryKey = $this->db->processQuery($query);
+			$query = [
+				"INSERT INTO GeneralSubject (`shortName`, `subjectSpecialist`)", 
+				"VALUES ('{$cleanedShortName}', '{$cleanedSelector}')"
+			];
+			$this->primaryKey = $this->db->processQuery(implode(" ", $query));
 
 			$query = "INSERT INTO GeneralDetailSubjectLink (`generalSubjectID`,`detailedSubjectID` ) VALUES ('" . $this->primaryKey . "', -1)";
 			$this->db->processQuery($query);
@@ -104,9 +112,15 @@ class GeneralSubject extends DatabaseObject {
 	}
 
 	//returns number of General subjects that match what is passed.
-	public function duplicateCheck($shortName){
-		$query = "SELECT count(*) duplicateCount FROM GeneralSubject WHERE `shortName` = '" . str_replace( "'", "''", $shortName ) . "'";
-		$result = $this->db->processQuery($query, 'assoc');
+	public function duplicateCheck($shortName, $subjectSpecialist = ""){
+		$query = [
+			"SELECT count(*) duplicateCount",
+			"FROM GeneralSubject",
+			"WHERE `shortName` = '" . str_replace( "'", "''", $shortName ) . "'",
+			"AND `subjectSpecialist` = '{$subjectSpecialist}'",
+		];
+		$queryString = implode(" ", $query);
+		$result = $this->db->processQuery($queryString, 'assoc');
 
 		return $result['duplicateCount'];
 	}
