@@ -283,7 +283,17 @@ class User extends DatabaseObject {
 
 	}
 
-
+	public function isSubjectSpecialist($loginID){
+		$query = [
+			"SELECT COUNT(*) AS 'Subjects'", 
+			"FROM `GeneralSubject`",
+			"WHERE `subjectSpecialist` = '{$loginID}';"
+		];
+		$queryString = implode(" ", $query);
+		$result = $this->db->processQuery($queryString, 'assoc');
+		$output = ($result['Subjects'] > 0);
+		return $output;
+	}
 
 	public function hasOpenSession() {
 		$util = new Utility();

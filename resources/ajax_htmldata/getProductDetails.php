@@ -327,22 +327,20 @@
 				</tr>
 				<?php
 					$generalSubjectID = 0;
+					$loginID = $user->loginID;
+					
 					foreach ($generalDetailSubjectIDArray as $generalDetailSubjectID){
 						$generalSubject = new GeneralSubject(new NamedArguments(array('primaryKey' => $generalDetailSubjectID['generalSubjectID'])));
 						$detailedSubject = new DetailedSubject(new NamedArguments(array('primaryKey' => $generalDetailSubjectID['detailedSubjectID'])));
-
+						$specialist = $generalSubject->subjectSpecialist;
+						$isSpecialist = (($loginID == $specialist)||($specialist == ""));
 				?>
 						<tr>
 							<td>
 								<?php if ($generalDetailSubjectID['generalSubjectID'] != $generalSubjectID) {
 										echo $generalSubject->shortName;
-											// Allow deleting of the General Subject if no Detail Subjects exist
-											if (in_array($generalDetailSubjectID['generalSubjectID'], $generalDetailSubjectIDArray[0], true) > 1) {
-												$canDelete = false;
-											} else {
-												$canDelete = true;
-											}
-
+										// Allow deleting of the General Subject if no Detail Subjects exist
+										$canDelete = !(in_array($generalDetailSubjectID['generalSubjectID'], $generalDetailSubjectIDArray[0], true) > 1);
 									} else {
 										echo "&nbsp;";
 										$canDelete = true;
@@ -355,7 +353,7 @@
 							</td>
 
 							<td style='width:50px;'>
-							<?php if ($user->canEdit() && $canDelete) { ?>
+							<?php if (($user->canEdit()||$isSpecialist) && $canDelete) { ?>
 								<a style='margin-left:33px' href='javascript:void(0);'
 									tab='Product'
 									class='removeResourceSubjectRelationship'
@@ -382,8 +380,8 @@
 		<?php
 
 
-
-		if ($user->canEdit()){
+		$privilegeID = $user->attributes['privilegeID'];
+		if ($user->canEdit()||$privilegeID == 4){
 		?>
 			<a href='ajax_forms.php?action=getResourceSubjectForm&height=700&width=425&tab=Product&resourceID=<?php echo $resourceID; ?>&modal=true' class='thickbox'><?php echo _("add subject");?></a>
 		<?php
