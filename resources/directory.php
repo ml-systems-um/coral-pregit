@@ -38,7 +38,7 @@ function integer_to_cost($price) {
     if ($price > 0){
         return $nf->format($price / 100);
     }else{
-        return "";
+        return $nf->format(0);
     }
 }
 
